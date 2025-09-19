@@ -1,19 +1,59 @@
 package hexlet.code;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinJte;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.stream.Collectors;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+//import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import hexlet.code.repository.BaseRepository;
+
+
 public class App {
-    public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    private static int getPort() {
+        String port = System.getenv().getOrDefault("PORT", "7070");
+        return Integer.valueOf(port);
+    }
+    public static Javalin getApp() throws IOException, SQLException {
+        var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:h2:mem:hexlet;DB_CLOSE_DELAY=-1;");
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        var dataSource = new HikariDataSource(hikariConfig);
+        var url = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        var sql = new BufferedReader(new InputStreamReader(url))
+                .lines().collect(Collectors.joining("\n"));
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+        //log.info(sql);
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
         }
+        BaseRepository.dataSource = dataSource;
+
+        var app = Javalin.create(config -> {
+            config.bundledPlugins.enableDevLogging();
+            config.fileRenderer(new JavalinJte());
+        });
+
+        app.get("/", ctx -> {
+            ctx.result("Hello World");
+        });
+
+        return app;
+    }
+    public static void main(String[] args) throws SQLException, IOException {
+        var app = getApp();
+        app.start(getPort());
+
     }
 }
