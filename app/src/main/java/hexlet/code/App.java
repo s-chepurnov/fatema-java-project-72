@@ -11,14 +11,11 @@ import java.util.stream.Collectors;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-//import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import hexlet.code.repository.BaseRepository;
 
-
+@Slf4j
 public class App {
     private static int getPort() {
         String port = System.getenv().getOrDefault("PORT", "7070");
@@ -55,5 +52,9 @@ public class App {
         var app = getApp();
         app.start(getPort());
 
+    }
+
+    private static String getDatabaseUrl() {
+        return System.getenv().getOrDefault("DATABASE_URL", "jdbc:h2:mem:project");
     }
 }

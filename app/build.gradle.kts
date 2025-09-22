@@ -55,16 +55,14 @@ dependencies {
     implementation("info.picocli:picocli:$picocliVersion")
     implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
 
-    implementation ("org.slf4j:slf4j-api:2.0.16")
-
     implementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2")
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1")
 
     annotationProcessor("info.picocli:picocli-codegen:$picocliVersion")
 
-    compileOnly ("org.projectlombok:lombok:1.18.24")
-    annotationProcessor ("org.projectlombok:lombok:1.18.24")
+    compileOnly ("org.projectlombok:lombok:1.18.38")
+    annotationProcessor ("org.projectlombok:lombok:1.18.38")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
