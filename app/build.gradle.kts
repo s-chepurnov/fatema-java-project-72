@@ -45,15 +45,17 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
 
+    implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
     implementation ("org.apache.commons:commons-text:1.9")
     implementation ("commons-codec:commons-codec:1.18.0")
+    implementation("commons-io:commons-io:$commonsIoVersion")
+
     implementation ("com.google.guava:guava:31.1-jre")
+
     implementation("com.h2database:h2:2.2.220")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
-    implementation("commons-io:commons-io:$commonsIoVersion")
     implementation("info.picocli:picocli:$picocliVersion")
-    implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
 
     implementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2")
