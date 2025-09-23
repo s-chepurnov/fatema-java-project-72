@@ -3,3 +3,4 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=F-Jahura_java-project-72&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=F-Jahura_java-project-72)
 ###Deploy link:
 https://java-project-72-1-ucw2.onrender.com
+https://java-project-72-2-c7vd.onrender.com
