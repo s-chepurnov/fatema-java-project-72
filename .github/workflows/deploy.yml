@@ -14,8 +14,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install dependencies
+      working-directory: ./app
       run: |
-        ./app/gradlew build
+        ./gradlew build
 
     - name: Deploy to Render
       env:
