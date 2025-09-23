@@ -15,7 +15,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        ./gradlew build
+        ./app/gradlew build
 
     - name: Deploy to Render
       env:
