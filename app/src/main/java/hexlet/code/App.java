@@ -3,14 +3,15 @@ package hexlet.code;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.UrlsController;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -44,11 +45,35 @@ public class App {
         return templateEngine;
     }
 
+    private static HikariDataSource createDataSource() throws IOException {
+        Properties properties = new Properties();
+        String environment = System.getProperty("app.env", "dev");
+
+        try (InputStream input = App.class.getClassLoader().getResourceAsStream("application-" + environment + ".properties")) {
+            if (input == null) {
+                throw new FileNotFoundException("Configuration file 'application-" + environment + ".properties' not found in classpath");
+            }
+            properties.load(input);
+        }
+
+        String url = properties.getProperty("jdbc.url");
+        String user = properties.getProperty("jdbc.username");
+        String password = properties.getProperty("jdbc.password");
+
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(url);
+        config.setUsername(user);
+        config.setPassword(password);
+
+        return new HikariDataSource(config);
+    }
+
     public static Javalin getApp() throws IOException, SQLException {
-        var hikariConfig = new HikariConfig();
+        /*var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl("jdbc:h2:mem:java-project-72;DB_CLOSE_DELAY=-1;");
 
-        var dataSource = new HikariDataSource(hikariConfig);
+        var dataSource = new HikariDataSource(hikariConfig);*/
+        HikariDataSource dataSource = createDataSource();
         var sql = readResourceFile("schema.sql");
 
         log.info(sql);
@@ -63,9 +88,11 @@ public class App {
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get("/", ctx -> {
-            ctx.render("index.jte");
-        });
+        app.get(NamedRoutes.rootPath(), UrlsController::build);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
+
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
 
         return app;
     }
