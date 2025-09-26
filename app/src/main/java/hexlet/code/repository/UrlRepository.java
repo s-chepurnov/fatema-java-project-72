@@ -2,7 +2,6 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +24,6 @@ public class UrlRepository extends BaseRepository {
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                //Timestamp timestamp = resultSet.getTimestamp("createdAt");
                 var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
 
                 Url url = new Url(name);
@@ -36,6 +34,7 @@ public class UrlRepository extends BaseRepository {
             return Optional.empty();
         }
     }
+
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var conn = dataSource.getConnection();
@@ -60,23 +59,23 @@ public class UrlRepository extends BaseRepository {
         var sql = "SELECT * FROM urls";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
-             var resultSet = stmt.executeQuery();
-             var result = new ArrayList<Url>();
+            var resultSet = stmt.executeQuery();
+            var result = new ArrayList<Url>();
 
-             while (resultSet.next()) {
-                 Long id = resultSet.getLong("id");
-                 String name = resultSet.getString("name");
-                 var createdAt =  resultSet.getTimestamp("created_at").toLocalDateTime();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String name = resultSet.getString("name");
+                var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
 
-                 Url url = new Url(name);
-                 url.setId(id);
-                 url.setCreatedAt(createdAt);
-                 result.add(url);
-             }
-             return result;
+                Url url = new Url(name);
+                url.setId(id);
+                url.setCreatedAt(createdAt);
+                result.add(url);
+            }
+            return result;
         }
     }
-    
+
     public static boolean existsByName(String name) throws SQLException {
         String sql = "SELECT COUNT(*) FROM urls WHERE name = ?";
         try (Connection connection = dataSource.getConnection();
