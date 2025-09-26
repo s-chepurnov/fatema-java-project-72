@@ -8,7 +8,11 @@ import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -49,9 +53,11 @@ public class App {
         Properties properties = new Properties();
         String environment = System.getProperty("app.env", "dev");
 
-        try (InputStream input = App.class.getClassLoader().getResourceAsStream("application-" + environment + ".properties")) {
+        try (InputStream input = App.class.getClassLoader()
+                .getResourceAsStream("application-" + environment + ".properties")) {
             if (input == null) {
-                throw new FileNotFoundException("Configuration file 'application-" + environment + ".properties' not found in classpath");
+                throw new FileNotFoundException("Configuration file 'application-"
+                        + environment + ".properties' not found in classpath");
             }
             properties.load(input);
         }
@@ -69,10 +75,6 @@ public class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
-        /*var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl("jdbc:h2:mem:java-project-72;DB_CLOSE_DELAY=-1;");
-
-        var dataSource = new HikariDataSource(hikariConfig);*/
         HikariDataSource dataSource = createDataSource();
         var sql = readResourceFile("schema.sql");
 

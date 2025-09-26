@@ -2,13 +2,20 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UrlRepository extends BaseRepository{
+public class UrlRepository extends BaseRepository {
 
     public static Optional<Url> find(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
@@ -57,20 +64,19 @@ public class UrlRepository extends BaseRepository{
              var result = new ArrayList<Url>();
 
              while (resultSet.next()) {
-                Long id = resultSet.getLong("id");
-                String name = resultSet.getString("name");
-                //Timestamp timestamp = resultSet.getTimestamp("createdAt");
-                var createdAt =  resultSet.getTimestamp("created_at").toLocalDateTime();
+                 Long id = resultSet.getLong("id");
+                 String name = resultSet.getString("name");
+                 var createdAt =  resultSet.getTimestamp("created_at").toLocalDateTime();
 
-                Url url = new Url(name);
-                url.setId(id);
-                url.setCreatedAt(createdAt);
-                result.add(url);
-            }
-            return result;
+                 Url url = new Url(name);
+                 url.setId(id);
+                 url.setCreatedAt(createdAt);
+                 result.add(url);
+             }
+             return result;
         }
     }
-
+    
     public static boolean existsByName(String name) throws SQLException {
         String sql = "SELECT COUNT(*) FROM urls WHERE name = ?";
         try (Connection connection = dataSource.getConnection();
