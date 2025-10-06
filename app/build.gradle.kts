@@ -11,6 +11,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 application {
@@ -29,41 +30,71 @@ val junitBomVersion = "5.9.1"
 val picocliVersion = "4.7.7"
 val commonsIoVersion = "2.14.0"
 val commonsLangVersion = "3.17.0"
+val commonsTextVersion = "1.9"
+val commonsCodecVersion = "1.18.0"
+
+val javalinVersion = "6.6.0"
+val jteVersion = "3.1.9"
+val slf4jVersion = "2.0.17"
+
+val jacksonVersion = "2.16.1"
+val guavaVersion = "31.1-jre"
+
+val h2databaseVersion = "2.2.220"
+val postgresqlVersion = "42.3.3"
+val hikariCpVersion = "5.0.1"
+val jakartaServletVersion = "6.1.0"
+val jakartaServletJspVersion = "3.0.2"
+val jakartaServletJspJstlVersion = "3.0.1"
+
+val unirestVersion = "v4.5.1"
+val jsoupVersion = "1.16.1"
+val lombokVersion = "1.18.38"
+
+val assertjCoreVersion = "3.27.3"
+val mockWebServerVersion = "4.9.3"
+val mockitoCoreVersion = "4.2.0"
+
 
 dependencies {
     implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
-    implementation ("org.apache.commons:commons-text:1.9")
-    implementation ("commons-codec:commons-codec:1.18.0")
+    implementation ("org.apache.commons:commons-text:$commonsTextVersion")
+    implementation ("commons-codec:commons-codec:$commonsCodecVersion")
     implementation("commons-io:commons-io:$commonsIoVersion")
 
-    implementation("io.javalin:javalin:6.6.0")
-    implementation("io.javalin:javalin-bundle:6.6.0")
-    implementation("io.javalin:javalin-rendering:6.6.0")
-    implementation("gg.jte:jte:3.1.9")
+    implementation("io.javalin:javalin:$javalinVersion")
+    implementation("io.javalin:javalin-bundle:$javalinVersion")
+    implementation("io.javalin:javalin-rendering:$javalinVersion")
+    implementation("gg.jte:jte:$jteVersion")
+    implementation("org.slf4j:slf4j-simple:$slf4jVersion")
 
-    implementation("org.slf4j:slf4j-simple:2.0.17")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation ("com.google.guava:guava:$guavaVersion")
 
-    implementation ("net.datafaker:datafaker:2.3.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
-    implementation ("com.google.guava:guava:31.1-jre")
-
-    implementation("com.h2database:h2:2.2.220")
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("com.h2database:h2:$h2databaseVersion")
+    implementation ("org.postgresql:postgresql:$postgresqlVersion")
+    implementation("com.zaxxer:HikariCP:$hikariCpVersion")
 
     implementation("info.picocli:picocli:$picocliVersion")
 
-    implementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
-    implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2")
-    implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1")
+    implementation("jakarta.servlet:jakarta.servlet-api:$jakartaServletVersion")
+    implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:$jakartaServletJspVersion")
+    implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:$jakartaServletJspJstlVersion")
+
+    implementation ("com.github.Kong:unirest-java:$unirestVersion")
+    implementation ("org.jsoup:jsoup:$jsoupVersion")
 
     annotationProcessor("info.picocli:picocli-codegen:$picocliVersion")
-    annotationProcessor ("org.projectlombok:lombok:1.18.38")
+    annotationProcessor ("org.projectlombok:lombok:$lombokVersion")
 
-    compileOnly ("org.projectlombok:lombok:1.18.38")
+    compileOnly ("org.projectlombok:lombok:$lombokVersion")
 
-    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation("org.assertj:assertj-core:$assertjCoreVersion")
     testImplementation(platform("org.junit:junit-bom:$junitBomVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation ("com.squareup.okhttp3:mockwebserver:$mockWebServerVersion")
+    testImplementation ("org.mockito:mockito-core:$mockitoCoreVersion")
+    testImplementation ("org.mockito:mockito-inline:$mockitoCoreVersion")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

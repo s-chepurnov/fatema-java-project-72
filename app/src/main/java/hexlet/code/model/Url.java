@@ -18,6 +18,7 @@ public class Url {
     private String name;
 
     private LocalDateTime createdAt;
+    private UrlCheck lastCheck;
 
     public Url(String name, LocalDateTime createdAt) {
         this.name = name;
@@ -28,4 +29,9 @@ public class Url {
         this.name = name;
     }
 
+    public Url(Long id, String name, LocalDateTime createdAt) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = createdAt;
+    }
 }

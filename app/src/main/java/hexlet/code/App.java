@@ -6,6 +6,7 @@ import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.UrlsController;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
 
 import java.io.BufferedReader;
@@ -23,6 +24,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 import hexlet.code.repository.BaseRepository;
+
 
 @Slf4j
 public class App {
@@ -87,14 +89,18 @@ public class App {
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
+            config.staticFiles.add("/assets", Location.CLASSPATH);
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
+
+
 
         app.get(NamedRoutes.rootPath(), UrlsController::build);
         app.post(NamedRoutes.urlsPath(), UrlsController::create);
 
         app.get(NamedRoutes.urlsPath(), UrlsController::index);
         app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+        app.post("/urls/{id}/checks", UrlsController::createCheck);
 
         return app;
     }
