@@ -30,7 +30,7 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public class UrlsController {
-    private static final Logger logger = LoggerFactory.getLogger(UrlsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UrlsController.class);
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
 
@@ -57,7 +57,7 @@ public class UrlsController {
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
-            logger.error("Server error occurred", e);
+            LOGGER.error("Server error occurred", e);
             ctx.status(500).result("Server error occurred");
         }
     }
@@ -113,7 +113,7 @@ public class UrlsController {
         try {
             optionalUrl = UrlRepository.findById(id);
         } catch (SQLException e) {
-            logger.error("Error in database", e);
+            LOGGER.error("Error in database", e);
             ctx.status(500).result("Error in database");
             return;
         }
@@ -132,7 +132,7 @@ public class UrlsController {
             saveUrlCheck(newCheck);
             ctx.redirect("/urls/" + id);
         } catch (Exception e) {
-            logger.error("Error during verification URL", e);
+            LOGGER.error("Error during verification URL", e);
             ctx.status(500).result("Error during verification URL");
         }
     }
