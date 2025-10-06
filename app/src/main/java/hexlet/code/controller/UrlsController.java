@@ -12,6 +12,8 @@ import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -28,6 +30,7 @@ import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public class UrlsController {
+    private static final Logger logger = LoggerFactory.getLogger(UrlsController.class);
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
 
@@ -54,8 +57,8 @@ public class UrlsController {
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
+            logger.error("Server error occurred", e);
             ctx.status(500).result("Server error occurred");
-            e.printStackTrace();
         }
     }
 
@@ -110,7 +113,7 @@ public class UrlsController {
         try {
             optionalUrl = UrlRepository.findById(id);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error in database", e);
             ctx.status(500).result("Error in database");
             return;
         }
@@ -129,7 +132,7 @@ public class UrlsController {
             saveUrlCheck(newCheck);
             ctx.redirect("/urls/" + id);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error during verification URL", e);
             ctx.status(500).result("Error during verification URL");
         }
     }
