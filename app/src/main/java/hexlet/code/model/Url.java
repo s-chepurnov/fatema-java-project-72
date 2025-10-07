@@ -20,6 +20,7 @@ public class Url {
     private LocalDateTime createdAt;
     private UrlCheck lastCheck;
 
+    @SuppressWarnings("all")
     public Url(String name, LocalDateTime createdAt) {
         this.name = name;
         this.createdAt = createdAt;

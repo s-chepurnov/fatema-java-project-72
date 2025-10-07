@@ -28,6 +28,7 @@ import hexlet.code.repository.BaseRepository;
 
 @Slf4j
 public class App {
+    @SuppressWarnings("java:S1144")
     private static int getPort() {
         String port = System.getenv().getOrDefault("PORT", "7070");
         return Integer.valueOf(port);
@@ -40,17 +41,13 @@ public class App {
         }
     }
 
-    private static String getDatabaseUrl() {
-        return System.getenv().getOrDefault("DATABASE_URL", "jdbc:h2:mem:project");
-    }
-
     private static TemplateEngine createTemplateEngine() {
         ClassLoader classLoader = App.class.getClassLoader();
         ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
-        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
-        return templateEngine;
+        return TemplateEngine.create(codeResolver, ContentType.Html);
     }
 
+    @SuppressWarnings("java:S1144")
     private static HikariDataSource createDataSource() throws IOException {
         Properties properties = new Properties();
         String environment = System.getProperty("app.env", "dev");
@@ -104,6 +101,7 @@ public class App {
 
         return app;
     }
+    @SuppressWarnings("java:S1144")
     public static void main(String[] args) throws SQLException, IOException {
         var app = getApp();
         app.start(getPort());

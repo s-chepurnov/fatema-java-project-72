@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class AppTest {
+class AppTest {
     private static MockWebServer mockWebServer;
     private Javalin app;
     private Url testUrl;
@@ -49,17 +49,17 @@ public class AppTest {
         UrlRepository.save(testUrl);
 
         testUrlCheck = new UrlCheck(
+                testUrl.getId(),
                 200,
                 "Test Page Title",
                 "Test H1 Heading",
-                "Test Description",
-                testUrl.getId()
+                "Test Description"
         );
         UrlCheckRepository.saveUrlCheck(testUrlCheck);
     }
 
     @AfterAll
-    public static void tearDown() throws IOException {
+    static void tearDown() throws IOException {
         mockWebServer.shutdown();
     }
     @Test
@@ -88,24 +88,24 @@ public class AppTest {
     void testUrlIDNamePage() {
         JavalinTest.test(app, (server, client) -> {
             String fixture = "https://www.google.com";
-            var url = new Url("https://www.google.com");
+            var url = new Url(fixture);
             UrlRepository.save(url);
             var response = client.get("/urls/" + url.getId());
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string())
-                    .contains("https://www.google.com");
-            assertFalse(UrlRepository.findByName("https://www.google.com").isEmpty());
+                    .contains(fixture);
+            assertFalse(UrlRepository.findByName(fixture).isEmpty());
         });
     }
 
     @Test
     void testShowUrlWithMultipleChecks() throws SQLException {
         UrlCheck secondCheck = new UrlCheck(
+                testUrl.getId(),
                 200,
                 "Second Page Title",
                 "Second H1",
-                "Second Description",
-                testUrl.getId()
+                "Second Description"
         );
         UrlCheckRepository.saveUrlCheck(secondCheck);
 
@@ -139,8 +139,6 @@ public class AppTest {
         Url mockUrl = new Url(mockUrlString);
         UrlRepository.save(mockUrl);
 
-        var idInBase = mockUrl.getId();
-
         JavalinTest.test(app, (server, client) -> {
             var response = client.post(NamedRoutes.urlsCheckPath(mockUrl.getId()));
             assertThat(response.code()).isEqualTo(200);
@@ -157,7 +155,7 @@ public class AppTest {
     }
 
     @Test
-    void testUrlNotFound() throws Exception {
+    void testUrlNotFound() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls/999999");
             assertThat(response.code()).isEqualTo(404);

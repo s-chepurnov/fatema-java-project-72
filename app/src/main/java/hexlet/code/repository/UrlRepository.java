@@ -14,17 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("java:S6905")
 public class UrlRepository extends BaseRepository {
+    private static final String CREATED_AT = "created_at";
 
     public static Optional<Url> findById(Long id) throws SQLException {
-        var sql = "SELECT * FROM urls WHERE id = ?";
+        var sql = "SELECT id, name, created_at FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                var createdAt = resultSet.getTimestamp(CREATED_AT).toLocalDateTime();
 
                 Url url = new Url(name);
                 url.setId(id);
@@ -35,14 +37,15 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
+
     public static Optional<Url> findByName(String name) throws SQLException {
-        String sql = "SELECT * FROM urls WHERE name = ?";
+        String sql = "SELECT id, name, created_at FROM urls WHERE name = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                var createAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                var createAt = resultSet.getTimestamp(CREATED_AT).toLocalDateTime();
                 var id = resultSet.getLong("id");
                 var url = new Url(id, name, createAt);
                 return Optional.of(url);
@@ -72,7 +75,7 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static List<Url> getEntities() throws SQLException {
-        var sql = "SELECT * FROM urls";
+        var sql = "SELECT id, name, created_at FROM urls";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
@@ -81,7 +84,7 @@ public class UrlRepository extends BaseRepository {
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
-                var createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                var createdAt = resultSet.getTimestamp(CREATED_AT).toLocalDateTime();
 
                 Url url = new Url(name);
                 url.setId(id);
@@ -104,5 +107,4 @@ public class UrlRepository extends BaseRepository {
         }
         return false;
     }
-
 }

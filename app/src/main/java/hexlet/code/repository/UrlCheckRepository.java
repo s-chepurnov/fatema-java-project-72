@@ -19,6 +19,13 @@ import org.slf4j.LoggerFactory;
 
 public class UrlCheckRepository extends BaseRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(UrlCheckRepository.class);
+    private static final String ID = "id";
+    private static final String URL_ID = "url_id";
+    private static final String STATUS_CODE = "status_code";
+    private static final String TITLE = "title";
+    private static final String DESCRIPTION = "description";
+    private static final String CREATED_AT = "created_at";
+    private static final String H1 = "h1";
     public static void saveUrlCheck(UrlCheck urlCheck) throws SQLException {
         String sql = "INSERT INTO url_checks "
                 + "(url_id, status_code, title, h1, description, created_at) VALUES (?, ?, ?, ?, ?, ?)";
@@ -47,7 +54,8 @@ public class UrlCheckRepository extends BaseRepository {
 
     public static List<UrlCheck> findAllChecksByUrlId(Long urlId) throws SQLException {
         List<UrlCheck> checks = new ArrayList<>();
-        String sql = "SELECT * FROM url_checks WHERE url_id = ?";
+        String sql =
+                "SELECT id, url_id, status_code, title, h1, description, created_at FROM url_checks WHERE url_id = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -57,13 +65,13 @@ public class UrlCheckRepository extends BaseRepository {
 
             while (rs.next()) {
                 UrlCheck check = new UrlCheck();
-                check.setId(rs.getLong("id"));
-                check.setUrlId(rs.getLong("url_id"));
-                check.setStatusCode(rs.getInt("status_code"));
-                check.setTitle(rs.getString("title"));
-                check.setH1(rs.getString("h1"));
-                check.setDescription(rs.getString("description"));
-                check.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                check.setId(rs.getLong(ID));
+                check.setUrlId(rs.getLong(URL_ID));
+                check.setStatusCode(rs.getInt(STATUS_CODE));
+                check.setTitle(rs.getString(TITLE));
+                check.setH1(rs.getString(H1));
+                check.setDescription(rs.getString(DESCRIPTION));
+                check.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
 
                 checks.add(check);
             }
@@ -72,7 +80,8 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static Optional<UrlCheck> findLastCheckByUrlId(Long urlId) throws SQLException {
-        String sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
+        String sql = "SELECT id, url_id, status_code, title, h1, description, created_at"
+                + " FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -82,13 +91,13 @@ public class UrlCheckRepository extends BaseRepository {
 
             if (rs.next()) {
                 UrlCheck check = new UrlCheck();
-                check.setId(rs.getLong("id"));
-                check.setUrlId(rs.getLong("url_id"));
-                check.setStatusCode(rs.getInt("status_code"));
-                check.setTitle(rs.getString("title"));
-                check.setH1(rs.getString("h1"));
-                check.setDescription(rs.getString("description"));
-                check.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                check.setId(rs.getLong(ID));
+                check.setUrlId(rs.getLong(URL_ID));
+                check.setStatusCode(rs.getInt(STATUS_CODE));
+                check.setTitle(rs.getString(TITLE));
+                check.setH1(rs.getString(H1));
+                check.setDescription(rs.getString(DESCRIPTION));
+                check.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
 
                 return Optional.of(check);
             }
@@ -106,13 +115,13 @@ public class UrlCheckRepository extends BaseRepository {
             var resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 var listOfUrls = new UrlCheck();
-                listOfUrls.setId(resultSet.getLong("id"));
-                listOfUrls.setStatusCode(resultSet.getInt("status_code"));
-                listOfUrls.setTitle(resultSet.getString("title"));
-                listOfUrls.setH1(resultSet.getString("h1"));
-                listOfUrls.setDescription(resultSet.getString("description"));
-                listOfUrls.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
-                var urlId = resultSet.getLong("url_id");
+                listOfUrls.setId(resultSet.getLong(ID));
+                listOfUrls.setStatusCode(resultSet.getInt(STATUS_CODE));
+                listOfUrls.setTitle(resultSet.getString(TITLE));
+                listOfUrls.setH1(resultSet.getString(H1));
+                listOfUrls.setDescription(resultSet.getString(DESCRIPTION));
+                listOfUrls.setCreatedAt(resultSet.getTimestamp(CREATED_AT).toLocalDateTime());
+                var urlId = resultSet.getLong(URL_ID);
                 listOfUrls.setUrlId(urlId);
                 lastChecks.put(urlId, listOfUrls);
             }

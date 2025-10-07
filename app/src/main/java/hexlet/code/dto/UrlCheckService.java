@@ -7,22 +7,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 
-
 public class UrlCheckService {
+    private static final String DESCRIPTION = "meta[name=description]";
     public UrlCheck performCheck(String url) throws Exception {
         HttpResponse<String> response = Unirest.get(url).asString();
         int statusCode = response.getStatus();
         Document doc = Jsoup.parse(response.getBody());
 
-        System.out.println(doc);
-        System.out.println("Title: " + doc.title());
-        System.out.println("H1: " + doc.select("h1").text());
-        System.out.println("Description: " + doc.select("meta[name=description]").attr("content"));
-
+        @SuppressWarnings("java:S106")
         String title = !doc.title().isEmpty() ? doc.title() : "No title";
+        @SuppressWarnings("java:S106")
         String h1 = doc.select("h1").isEmpty() ? "No h1" : doc.select("h1").text();
-        String description = doc.select("meta[name=description]").isEmpty()
-                ? "No description" : doc.select("meta[name=description]").attr("content");
+        @SuppressWarnings("java:S106")
+        String description = doc.select(DESCRIPTION).isEmpty()
+                ? "No description" : doc.select(DESCRIPTION).attr("content");
 
         UrlCheck urlCheck = new UrlCheck();
         urlCheck.setStatusCode(statusCode);

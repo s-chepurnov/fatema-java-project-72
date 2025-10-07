@@ -29,8 +29,12 @@ import static hexlet.code.repository.UrlCheckRepository.saveUrlCheck;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
-public class UrlsController {
+public final class UrlsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UrlsController.class);
+    private static final String FLASH = "flash";
+
+    private UrlsController() {
+    }
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
 
@@ -46,6 +50,7 @@ public class UrlsController {
 
         ctx.render("urls/show.jte", model);
     }
+    @SuppressWarnings("java:S1192")
     public static void index(Context ctx) {
         try {
             var urls = UrlRepository.getEntities();
@@ -54,7 +59,7 @@ public class UrlsController {
                 lastCheck.ifPresent(url::setLastCheck);
             }
             var page = new UrlsPage(urls);
-            page.setFlash(ctx.consumeSessionAttribute("flash"));
+            page.setFlash(ctx.consumeSessionAttribute(FLASH));
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
             LOGGER.error("Server error occurred", e);
@@ -64,15 +69,16 @@ public class UrlsController {
 
     public static void build(Context ctx) {
         var page = new BuildUrlPage();
-        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlash(ctx.consumeSessionAttribute(FLASH));
         ctx.render("urls/build.jte", model("page", page));
     }
 
+    @SuppressWarnings("java:S1192")
     public static void create(Context ctx) throws SQLException {
         String name = ctx.formParam("url");
 
         if (!name.startsWith("http://") && !name.startsWith("https://")) {
-            ctx.sessionAttribute("flash", "URL is not corrected");
+            ctx.sessionAttribute(FLASH, "URL is not corrected");
             ctx.redirect(NamedRoutes.rootPath());
             return;
         }
@@ -86,19 +92,19 @@ public class UrlsController {
                 baseUrl += ":" + url.getPort();
             }
 
-            System.out.println("Base URL: " + baseUrl);
+            LOGGER.info("Base URL: {}", baseUrl);
 
             if (UrlRepository.existsByName(baseUrl)) {
-                ctx.sessionAttribute("flash", "Webpage already exists");
+                ctx.sessionAttribute(FLASH, "Webpage already exists");
                 ctx.redirect(NamedRoutes.rootPath());
                 return;
             } else {
                 Url urlEntity = new Url(baseUrl);
                 UrlRepository.save(urlEntity);
-                ctx.sessionAttribute("flash", "Url is successfully created.");
+                ctx.sessionAttribute(FLASH, "Url is successfully created.");
             }
         } catch (URISyntaxException | MalformedURLException e) {
-            ctx.sessionAttribute("flash", "URL is not corrected");
+            ctx.sessionAttribute(FLASH, "URL is not corrected");
             ctx.redirect(NamedRoutes.rootPath());
             return;
         }
@@ -106,6 +112,7 @@ public class UrlsController {
         ctx.redirect(NamedRoutes.urlsPath());
     }
 
+    @SuppressWarnings("java:S106")
     public static void createCheck(Context ctx) throws SQLException {
         Long id = Long.parseLong(ctx.pathParam("id"));
 
