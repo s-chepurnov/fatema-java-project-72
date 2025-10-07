@@ -47,7 +47,7 @@ val jakartaServletVersion = "6.1.0"
 val jakartaServletJspVersion = "3.0.2"
 val jakartaServletJspJstlVersion = "3.0.1"
 
-val unirestVersion = "v4.5.1"
+val unirestVersion = "4.5.1"
 val jsoupVersion = "1.16.1"
 val lombokVersion = "1.18.38"
 
