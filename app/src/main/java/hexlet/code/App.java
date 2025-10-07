@@ -6,7 +6,6 @@ import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.UrlsController;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
-import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
 
 import java.io.BufferedReader;
@@ -86,7 +85,7 @@ public class App {
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
-            config.staticFiles.add("/assets", Location.CLASSPATH);
+            //config.staticFiles.add("/assets", Location.CLASSPATH);
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
