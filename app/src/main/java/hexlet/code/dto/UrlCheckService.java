@@ -1,10 +1,11 @@
 package hexlet.code.dto;
 
 import hexlet.code.model.UrlCheck;
-import kong.unirest.core.HttpResponse;
-import kong.unirest.core.Unirest;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
 
 
 public class UrlCheckService {

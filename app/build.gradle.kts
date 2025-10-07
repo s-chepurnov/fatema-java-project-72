@@ -47,7 +47,7 @@ val jakartaServletVersion = "6.1.0"
 val jakartaServletJspVersion = "3.0.2"
 val jakartaServletJspJstlVersion = "3.0.1"
 
-val unirestVersion = "4.5.1"
+val unirestVersion = "3.13.6"
 val jsoupVersion = "1.16.1"
 val lombokVersion = "1.18.38"
 
@@ -81,7 +81,7 @@ dependencies {
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:$jakartaServletJspVersion")
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:$jakartaServletJspJstlVersion")
 
-    implementation ("com.github.Kong:unirest-java:$unirestVersion")
+    implementation ("com.konghq:unirest-java:$unirestVersion")
     implementation ("org.jsoup:jsoup:$jsoupVersion")
 
     annotationProcessor("info.picocli:picocli-codegen:$picocliVersion")
