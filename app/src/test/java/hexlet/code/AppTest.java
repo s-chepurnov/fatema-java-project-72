@@ -36,6 +36,7 @@ class AppTest {
 
     @BeforeAll
     static void startMockServer() throws IOException {
+        //Unirest.config().socketTimeout(30000);
         mockWebServer = new MockWebServer();
         mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
         mockWebServer.start();
@@ -51,9 +52,9 @@ class AppTest {
         testUrlCheck = new UrlCheck(
                 testUrl.getId(),
                 200,
-                "Test Page Title",
-                "Test H1 Heading",
-                "Test Description"
+                "Test page",
+                "Do not expect a miracle, miracles yourself!",
+                "statements of great people"
         );
         UrlCheckRepository.saveUrlCheck(testUrlCheck);
     }
@@ -146,10 +147,10 @@ class AppTest {
             response = client.get(NamedRoutes.urlPath(mockUrl.getId()));
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string())
-                    .contains("Test Description");
+                    .contains("statements of great people");
             UrlCheck check = UrlCheckRepository.getLastChecksForAllUrls().get(1L);
-            assertThat(check.getTitle()).isEqualTo("Test Page Title");
-            assertThat(check.getH1()).isEqualTo("Test H1 Heading");
+            assertThat(check.getTitle()).isEqualTo("Test page");
+            assertThat(check.getH1()).isEqualTo("Do not expect a miracle, miracles yourself!");
 
         });
     }

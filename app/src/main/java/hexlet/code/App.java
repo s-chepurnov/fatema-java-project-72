@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import hexlet.code.repository.BaseRepository;
 
 
+
 @Slf4j
 public class App {
     @SuppressWarnings("java:S1144")
@@ -102,6 +103,14 @@ public class App {
     }
     @SuppressWarnings("java:S1144")
     public static void main(String[] args) throws SQLException, IOException {
+        /*OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        Unirest.config().setHttpClient(() -> client);*/
+        //Unirest.config().socketTimeout(30000);
+        //Unirest.config().setTimeouts(5000, 30000);
         var app = getApp();
         app.start(getPort());
     }
