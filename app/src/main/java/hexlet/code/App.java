@@ -103,14 +103,6 @@ public class App {
     }
     @SuppressWarnings("java:S1144")
     public static void main(String[] args) throws SQLException, IOException {
-        /*OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build();
-
-        Unirest.config().setHttpClient(() -> client);*/
-        //Unirest.config().socketTimeout(30000);
-        //Unirest.config().setTimeouts(5000, 30000);
         var app = getApp();
         app.start(getPort());
     }

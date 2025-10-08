@@ -1,7 +1,7 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.BuildUrlPage;
-import hexlet.code.dto.UrlCheckService;
+import hexlet.code.service.UrlCheckService;
 import hexlet.code.dto.UrlPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;

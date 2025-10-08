@@ -48,8 +48,8 @@ class AppTest {
     final void setUp() throws IOException, SQLException {
         app = App.getApp();
 
-        //testUrl = new Url("https://en.hexlet.io");
-        testUrl = new Url(mockWebServer.url("/").toString());
+        testUrl = new Url("https://en.hexlet.io");
+        //testUrl = new Url(mockWebServer.url("/").toString());
         UrlRepository.save(testUrl);
 
         testUrlCheck = new UrlCheck(
@@ -78,8 +78,8 @@ class AppTest {
     @Test
     void testUrlCreation() {
         JavalinTest.test(app, (server, client) -> {
-            //String fixture = "https://www.google.com";
-            String fixture = mockWebServer.url("/").toString();
+            String fixture = "https://www.google.com";
+            //String fixture = mockWebServer.url("/").toString();
             String urlForAdding = "url=" + fixture;
             var response = client.post(NamedRoutes.urlsPath(), urlForAdding);
             assertThat(response).isNotNull();
@@ -91,6 +91,7 @@ class AppTest {
 
     @Test
     void testUrlCheckCreation() throws SQLException {
+        //String mockUrlString = "https://www.google.com";
         var mockUrlString = mockWebServer.url("/").toString();
         Url mockUrl = new Url(mockUrlString);
         UrlRepository.save(mockUrl);
@@ -100,7 +101,7 @@ class AppTest {
             var response = client.post(NamedRoutes.urlChecksPath(idInBase));
             assertThat(response.code()).isEqualTo(200);
 
-            response = client.get(NamedRoutes.urlPath(mockUrl.getId()));
+            response = client.get(NamedRoutes.urlPath(idInBase));
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string())
                     .contains("statements of great people");
@@ -114,8 +115,8 @@ class AppTest {
     @Test
     void testUrlIDNamePage() {
         JavalinTest.test(app, (server, client) -> {
-            //String fixture = "https://www.google.com";
-            String fixture = mockWebServer.url("/").toString();
+            String fixture = "https://www.google.com";
+            //String fixture = mockWebServer.url("/").toString();
             var url = new Url(fixture);
             UrlRepository.save(url);
             var response = client.get("/urls/" + url.getId());

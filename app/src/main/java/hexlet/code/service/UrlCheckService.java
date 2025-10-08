@@ -1,4 +1,4 @@
-package hexlet.code.dto;
+package hexlet.code.service;
 
 import hexlet.code.model.UrlCheck;
 import kong.unirest.HttpResponse;
@@ -10,6 +10,13 @@ import org.jsoup.nodes.Document;
 
 public class UrlCheckService {
     private static final String DESCRIPTION = "meta[name=description]";
+
+    static {
+        Unirest.config()
+                .connectTimeout(3000)
+                .socketTimeout(3000)
+                .verifySsl(false);
+    }
     public UrlCheck performCheck(String url) throws Exception {
         HttpResponse<String> response = Unirest.get(url).asString();
         int statusCode = response.getStatus();
