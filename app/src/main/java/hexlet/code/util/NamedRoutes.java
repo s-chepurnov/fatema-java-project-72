@@ -27,7 +27,12 @@ public final class NamedRoutes {
         return URLS + id;
     }
 
-    public static String urlsCheckPath(Long id) {
+    public static String urlChecksPath(String id) {
+        return URLS + id + "/checks";
+    }
+
+    public static String urlChecksPath(Long id) {
         return URLS + id + "/checks";
     }
 }
+
