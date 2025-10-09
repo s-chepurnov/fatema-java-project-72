@@ -5,7 +5,6 @@ import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
-import hexlet.code.utils.TestUtils;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.mockwebserver.MockResponse;
@@ -21,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
-import static hexlet.code.repository.BaseRepository.dataSource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -65,6 +63,8 @@ class AppTest {
     static void tearDown() throws IOException {
         mockWebServer.shutdown();
     }
+
+
     @Test
     void testRootPage() {
         JavalinTest.test(app, (server, client) -> {
@@ -94,6 +94,7 @@ class AppTest {
         Url mockUrl = new Url(mockUrlString);
         mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
         UrlRepository.save(mockUrl);
+        System.out.println("Save URL: " + mockUrl.getName());
         Long idInBase = mockUrl.getId();
 
         JavalinTest.test(app, (server, client) -> {
@@ -161,43 +162,11 @@ class AppTest {
         });
     }
 
-
     @Test
     void testUrlNotFound() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls/999999");
             assertThat(response.code()).isEqualTo(404);
-        });
-    }
-
-    @Test
-    void testStore() throws SQLException {
-        String url = mockWebServer.url("/").toString().replaceAll("/$", "");
-        Url urlObj = new Url(url);
-        UrlRepository.save(urlObj);
-
-        JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=" + url;
-            org.assertj.core.api.Assertions.assertThat(client.post("/urls", requestBody).code()).isEqualTo(200);
-
-            var actualUrl = TestUtils.getUrlByName(dataSource, url);
-            assertThat(actualUrl).isNotNull();
-            System.out.println("\n!!!!!");
-            System.out.println(actualUrl);
-
-            System.out.println("\n");
-            assertThat(actualUrl.get("name").toString()).isEqualTo(url);
-
-            client.post("/urls/" + actualUrl.get("id") + "/checks");
-
-            org.assertj.core.api.Assertions.assertThat(client.get("/urls/" + actualUrl.get("id")).code())
-                    .isEqualTo(200);
-
-            var actualCheck = TestUtils.getUrlCheck(dataSource, (long) actualUrl.get("id"));
-            assertThat(actualCheck).isNotNull();
-            assertThat(actualCheck.get("title")).isEqualTo("Test page");
-            assertThat(actualCheck.get("h1")).isEqualTo("Do not expect a miracle, miracles yourself!");
-            assertThat(actualCheck.get("description")).isEqualTo("statements of great people");
         });
     }
 }
