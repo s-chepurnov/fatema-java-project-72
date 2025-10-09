@@ -41,7 +41,6 @@ class AppTest {
         mockWebServer = new MockWebServer();
         mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
         mockWebServer.start();
-    //System.out.println("MockWebServer started on: " + mockWebServer.getHostName() + ":" + mockWebServer.getPort());
     }
 
     @BeforeEach
@@ -90,10 +89,10 @@ class AppTest {
     }
 
     @Test
-    void testUrlCheckCreation() throws SQLException {
-        //String mockUrlString = "https://www.google.com";
-        var mockUrlString = mockWebServer.url("/").toString();
+    void testUrlCheckCreation() throws SQLException, IOException {
+        var mockUrlString = mockWebServer.url("/").toString().replaceAll("/$", "");
         Url mockUrl = new Url(mockUrlString);
+        mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
         UrlRepository.save(mockUrl);
         Long idInBase = mockUrl.getId();
 

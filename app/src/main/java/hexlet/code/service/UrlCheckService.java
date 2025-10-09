@@ -18,6 +18,7 @@ public class UrlCheckService {
                 .verifySsl(false);
     }
     public UrlCheck performCheck(String url) throws Exception {
+        System.out.println("Отправляю запрос по URL: " + url);
         HttpResponse<String> response = Unirest.get(url).asString();
         int statusCode = response.getStatus();
         Document doc = Jsoup.parse(response.getBody());

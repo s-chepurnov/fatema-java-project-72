@@ -14,7 +14,6 @@ public class TestUtils {
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, url);
-            var resultSet = stmt.executeUpdate();
         }
     }
 
@@ -43,7 +42,6 @@ public class TestUtils {
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, urlId);
-            var resultSet = stmt.executeUpdate();
         }
     }
 
