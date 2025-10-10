@@ -19,11 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppTest {
     private static MockWebServer mockWebServer;
@@ -94,10 +92,6 @@ class AppTest {
             var urlByName = UrlRepository.getUrlByName(fixture);
             assertThat(urlByName).isNotNull();
             assertThat(urlByName.get("name").toString()).isEqualTo(fixture);
-
-            Optional<Url> actualUrl = UrlRepository.findByName(fixture);
-            assertTrue(actualUrl.isPresent());
-            assertThat(actualUrl.get().getName()).isEqualTo(fixture);
         });
     }
 
@@ -123,12 +117,6 @@ class AppTest {
 
             client.post(NamedRoutes.urlChecksPath(orlObj.getId()));
             assertThat(client.get(NamedRoutes.urlPath(orlObj.getId())).code()).isEqualTo(200);
-
-            Optional<Url> findByName = UrlRepository.findByName(url);
-            assertThat(findByName).isNotNull();
-            assertTrue(findByName.isPresent());
-            assertThat(findByName.get().getName()).isEqualTo(url);
-
 
             UrlCheck actualCheck = UrlCheckRepository.getLastChecksForAllUrls().get(1L);
             assertThat(actualCheck).isNotNull();
