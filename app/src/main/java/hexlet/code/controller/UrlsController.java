@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -68,13 +65,50 @@ public final class UrlsController {
     }
 
     public static void build(Context ctx) {
+        String name = ctx.formParam("url");
         var page = new BuildUrlPage();
         page.setFlash(ctx.consumeSessionAttribute(FLASH));
+        page.setName(name);
         ctx.render("urls/build.jte", model("page", page));
     }
 
     @SuppressWarnings("java:S1192")
     public static void create(Context ctx) throws SQLException {
+        var inputUrl = ctx.formParam("url");
+        URI parsedUrl;
+        try {
+            parsedUrl = new URI(inputUrl);
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", "URL is not corrected");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.redirect(NamedRoutes.rootPath());
+            return;
+        }
+
+        String normalizedUrl = String
+                .format(
+                        "%s://%s%s",
+                        parsedUrl.getScheme(),
+                        parsedUrl.getHost(),
+                        parsedUrl.getPort() == -1 ? "" : ":" + parsedUrl.getPort()
+                )
+                .toLowerCase();
+
+        Url url = UrlRepository.findByName(normalizedUrl).orElse(null);
+
+        if (url != null) {
+            ctx.sessionAttribute("flash", "Webpage already exists");
+            ctx.sessionAttribute("flash-type", "info");
+        } else {
+            Url newUrl = new Url(normalizedUrl);
+            UrlRepository.save(newUrl);
+            ctx.sessionAttribute("flash", "Url is successfully created.");
+            ctx.sessionAttribute("flash-type", "success");
+        }
+
+        ctx.redirect("/urls");
+    };
+    /*public static void create(Context ctx) throws SQLException {
         String name = ctx.formParam("url");
 
         if (!name.startsWith("http://") && !name.startsWith("https://")) {
@@ -110,7 +144,7 @@ public final class UrlsController {
         }
 
         ctx.redirect(NamedRoutes.urlsPath());
-    }
+    }*/
 
     @SuppressWarnings("java:S106")
     public static void createCheck(Context ctx) throws SQLException {

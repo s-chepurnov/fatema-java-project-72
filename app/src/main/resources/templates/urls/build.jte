@@ -85,7 +85,7 @@
         <p class="page-analyze">Page analyzer</p>
         <p class="check">Check websites for free for SEO suitability</p>
        <label>
-       <input class="url-name" type="text" required name="url" placeholder="web link" />
+       <input class="url-name" type="text" required name="url" placeholder="web link" value="${page.getName()}" />
        </label>
        <input class="checking" type="submit" value="Check" />
        <p class="example">Example: https://www.example.com</p>

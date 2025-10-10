@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 
+
 @SuppressWarnings("java:S6905")
 public class UrlRepository extends BaseRepository {
     private static final String CREATED_AT = "created_at";

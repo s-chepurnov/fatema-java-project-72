@@ -19,9 +19,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppTest {
     private static MockWebServer mockWebServer;
@@ -46,7 +48,6 @@ class AppTest {
         app = App.getApp();
 
         testUrl = new Url("https://en.hexlet.io");
-        //testUrl = new Url(mockWebServer.url("/").toString());
         UrlRepository.save(testUrl);
 
         testUrlCheck = new UrlCheck(
@@ -78,37 +79,47 @@ class AppTest {
     void testUrlCreation() {
         JavalinTest.test(app, (server, client) -> {
             String fixture = "https://www.google.com";
-            //String fixture = mockWebServer.url("/").toString();
+            Url urlObj = new Url(fixture);
+            UrlRepository.save(urlObj);
             String urlForAdding = "url=" + fixture;
             var response = client.post(NamedRoutes.urlsPath(), urlForAdding);
+
             assertThat(response).isNotNull();
             assertThat(response.code()).isEqualTo(200);
-            assertThat(response.body().string())
-                    .contains(fixture);
+
+            var responseUrl = client.get(NamedRoutes.urlsPath());
+            assertThat(responseUrl.code()).isEqualTo(200);
+            assertThat(responseUrl.body().string()).contains(fixture);
+
+            Optional<Url> actualUrl = UrlRepository.findByName(fixture);
+            assertTrue(actualUrl.isPresent());
+            assertThat(actualUrl.get().getName()).isEqualTo(fixture);
         });
     }
 
     @Test
     void testUrlCheckCreation() throws SQLException, IOException {
-        var mockUrlString = mockWebServer.url("/").toString().replaceAll("/$", "");
-        Url mockUrl = new Url(mockUrlString);
-        mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
-        UrlRepository.save(mockUrl);
-        System.out.println("Save URL: " + mockUrl.getName());
-        Long idInBase = mockUrl.getId();
+        String url = mockWebServer.url("/").toString().replaceAll("/$", "");
+        Url orlObj = new Url(url);
+        UrlRepository.save(orlObj);
 
         JavalinTest.test(app, (server, client) -> {
-            var response = client.post(NamedRoutes.urlChecksPath(idInBase));
-            assertThat(response.code()).isEqualTo(200);
+            var requestBody = "url=" + url;
+            var response = client.post("/urls", requestBody);
 
-            response = client.get(NamedRoutes.urlPath(idInBase));
             assertThat(response.code()).isEqualTo(200);
-            assertThat(response.body().string())
-                    .contains("statements of great people");
-            UrlCheck check = UrlCheckRepository.getLastChecksForAllUrls().get(1L);
-            assertThat(check.getTitle()).isEqualTo("Test page");
-            assertThat(check.getH1()).isEqualTo("Do not expect a miracle, miracles yourself!");
+            Optional<Url> actualUrl = UrlRepository.findByName(url);
+            assertTrue(actualUrl.isPresent());
+            assertThat(actualUrl.get().getName()).isEqualTo(url);
 
+            client.post(NamedRoutes.urlChecksPath(orlObj.getId()));
+            assertThat(client.get(NamedRoutes.urlPath(orlObj.getId())).code()).isEqualTo(200);
+
+            UrlCheck actualCheck = UrlCheckRepository.getLastChecksForAllUrls().get(1L);
+            assertThat(actualCheck).isNotNull();
+            assertThat(actualCheck.getTitle()).isEqualTo("Test page");
+            assertThat(actualCheck.getH1()).isEqualTo("Do not expect a miracle, miracles yourself!");
+            assertThat(actualCheck.getDescription()).isEqualTo("statements of great people");
         });
     }
 
