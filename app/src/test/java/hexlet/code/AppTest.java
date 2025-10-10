@@ -91,6 +91,10 @@ class AppTest {
             assertThat(responseUrl.code()).isEqualTo(200);
             assertThat(responseUrl.body().string()).contains(fixture);
 
+            var urlByName = UrlRepository.getUrlByName(fixture);
+            assertThat(urlByName).isNotNull();
+            assertThat(urlByName.get("name").toString()).isEqualTo(fixture);
+
             Optional<Url> actualUrl = UrlRepository.findByName(fixture);
             assertTrue(actualUrl.isPresent());
             assertThat(actualUrl.get().getName()).isEqualTo(fixture);
@@ -108,12 +112,23 @@ class AppTest {
             var response = client.post("/urls", requestBody);
 
             assertThat(response.code()).isEqualTo(200);
-            Optional<Url> actualUrl = UrlRepository.findByName(url);
-            assertTrue(actualUrl.isPresent());
-            assertThat(actualUrl.get().getName()).isEqualTo(url);
+
+            var actualUrl = UrlRepository.getUrlByName(url);
+            assertThat(actualUrl).isNotNull();
+            System.out.println("\n!!!!!");
+            System.out.println(actualUrl);
+
+            System.out.println("\n");
+            assertThat(actualUrl.get("name").toString()).isEqualTo(url);
 
             client.post(NamedRoutes.urlChecksPath(orlObj.getId()));
             assertThat(client.get(NamedRoutes.urlPath(orlObj.getId())).code()).isEqualTo(200);
+
+            Optional<Url> findByName = UrlRepository.findByName(url);
+            assertThat(findByName).isNotNull();
+            assertTrue(findByName.isPresent());
+            assertThat(findByName.get().getName()).isEqualTo(url);
+
 
             UrlCheck actualCheck = UrlCheckRepository.getLastChecksForAllUrls().get(1L);
             assertThat(actualCheck).isNotNull();
@@ -127,7 +142,6 @@ class AppTest {
     void testUrlIDNamePage() {
         JavalinTest.test(app, (server, client) -> {
             String fixture = "https://www.google.com";
-            //String fixture = mockWebServer.url("/").toString();
             var url = new Url(fixture);
             UrlRepository.save(url);
             var response = client.get("/urls/" + url.getId());

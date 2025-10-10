@@ -2,15 +2,14 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -55,6 +54,24 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
+    public static Map<String, Object> getUrlByName(String url) throws SQLException {
+        var result = new HashMap<String, Object>();
+        var sql = "SELECT id, name, created_at FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, url);
+            var resultSet = stmt.executeQuery();
+
+            if (resultSet.next()) {
+                result.put("id", resultSet.getLong("id"));
+                result.put("name", resultSet.getString("name"));
+                return result;
+            }
+
+            return null;
+        }
+    }
+
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var conn = dataSource.getConnection();
@@ -94,18 +111,5 @@ public class UrlRepository extends BaseRepository {
             }
             return result;
         }
-    }
-
-    public static boolean existsByName(String name) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM urls WHERE name = ?";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, name);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt(1) > 0;
-            }
-        }
-        return false;
     }
 }

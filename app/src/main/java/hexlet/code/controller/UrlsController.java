@@ -107,44 +107,7 @@ public final class UrlsController {
         }
 
         ctx.redirect("/urls");
-    };
-    /*public static void create(Context ctx) throws SQLException {
-        String name = ctx.formParam("url");
-
-        if (!name.startsWith("http://") && !name.startsWith("https://")) {
-            ctx.sessionAttribute(FLASH, "URL is not corrected");
-            ctx.redirect(NamedRoutes.rootPath());
-            return;
-        }
-
-        try {
-            URI uri = new URI(name);
-            URL url = uri.toURL();
-
-            String baseUrl = url.getProtocol() + "://" + url.getHost();
-            if (url.getPort() != -1) {
-                baseUrl += ":" + url.getPort();
-            }
-
-            LOGGER.info("Base URL: {}", baseUrl);
-
-            if (UrlRepository.existsByName(baseUrl)) {
-                ctx.sessionAttribute(FLASH, "Webpage already exists");
-                ctx.redirect(NamedRoutes.rootPath());
-                return;
-            } else {
-                Url urlEntity = new Url(baseUrl);
-                UrlRepository.save(urlEntity);
-                ctx.sessionAttribute(FLASH, "Url is successfully created.");
-            }
-        } catch (URISyntaxException | MalformedURLException e) {
-            ctx.sessionAttribute(FLASH, "URL is not corrected");
-            ctx.redirect(NamedRoutes.rootPath());
-            return;
-        }
-
-        ctx.redirect(NamedRoutes.urlsPath());
-    }*/
+    }
 
     @SuppressWarnings("java:S106")
     public static void createCheck(Context ctx) throws SQLException {
