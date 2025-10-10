@@ -83,6 +83,7 @@ dependencies {
 
     implementation ("com.konghq:unirest-java:$unirestVersion")
     implementation ("org.jsoup:jsoup:$jsoupVersion")
+    implementation ("io.ebean:ebean:13.17.0")
 
     annotationProcessor("info.picocli:picocli-codegen:$picocliVersion")
     annotationProcessor ("org.projectlombok:lombok:$lombokVersion")

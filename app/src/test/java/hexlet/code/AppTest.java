@@ -9,8 +9,6 @@ import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,25 +18,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class AppTest {
     private static MockWebServer mockWebServer;
-    private Javalin app;
+    private static Javalin app;
+    private static String mockUrl;
     private Url testUrl;
     private UrlCheck testUrlCheck;
 
     static String readFileFixtures(String fileName) throws IOException {
         Path filePath = Paths.get("src/test/resources/", fileName);
         return new String(Files.readAllBytes(filePath));
-    }
-
-    @BeforeAll
-    static void startMockServer() throws IOException {
-        mockWebServer = new MockWebServer();
-        mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
-        mockWebServer.start();
     }
 
     @BeforeEach
@@ -57,12 +50,6 @@ class AppTest {
         );
         UrlCheckRepository.saveUrlCheck(testUrlCheck);
     }
-
-    @AfterAll
-    static void tearDown() throws IOException {
-        mockWebServer.shutdown();
-    }
-
 
     @Test
     void testRootPage() {
@@ -97,26 +84,31 @@ class AppTest {
 
     @Test
     void testUrlCheckCreation() throws SQLException, IOException {
-        String url = mockWebServer.url("/").toString().replaceAll("/$", "");
-        Url orlObj = new Url(url);
+        mockWebServer = new MockWebServer();
+        mockWebServer.enqueue(new MockResponse().setBody(readFileFixtures("mock_response.html")));
+        mockWebServer.start();
+        mockUrl = mockWebServer.url("/").toString().replaceAll("/$", "");
+        Url orlObj = new Url(mockUrl);
         UrlRepository.save(orlObj);
 
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "url=" + url;
+            var requestBody = "url=" + mockUrl;
             var response = client.post("/urls", requestBody);
 
             assertThat(response.code()).isEqualTo(200);
 
-            var actualUrl = UrlRepository.getUrlByName(url);
+            var actualUrl = UrlRepository.getUrlByName(mockUrl);
             assertThat(actualUrl).isNotNull();
             System.out.println("\n!!!!!");
             System.out.println(actualUrl);
 
             System.out.println("\n");
-            assertThat(actualUrl.get("name").toString()).isEqualTo(url);
+            assertThat(actualUrl.get("name").toString()).isEqualTo(mockUrl);
 
             client.post(NamedRoutes.urlChecksPath(orlObj.getId()));
             assertThat(client.get(NamedRoutes.urlPath(orlObj.getId())).code()).isEqualTo(200);
+
+            mockWebServer.shutdown();
 
             UrlCheck actualCheck = UrlCheckRepository.getLastChecksForAllUrls().get(1L);
             assertThat(actualCheck).isNotNull();
