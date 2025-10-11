@@ -15,10 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static hexlet.code.repository.UrlCheckRepository.saveUrlCheck;
 import static io.javalin.rendering.template.TemplateUtil.model;
