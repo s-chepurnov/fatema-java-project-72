@@ -12,22 +12,19 @@ import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
 
 import static hexlet.code.repository.UrlCheckRepository.saveUrlCheck;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public final class UrlsController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UrlsController.class);
     private static final String FLASH = "flash";
 
     private UrlsController() {
@@ -59,7 +56,7 @@ public final class UrlsController {
             page.setFlash(ctx.consumeSessionAttribute(FLASH));
             ctx.render("urls/index.jte", model("page", page));
         } catch (SQLException e) {
-            LOGGER.error("Server error occurred", e);
+            log.error("Server error occurred", e);
             ctx.status(500).result("Server error occurred");
         }
     }
@@ -115,9 +112,10 @@ public final class UrlsController {
 
         Optional<Url> optionalUrl;
         try {
-            optionalUrl = UrlRepository.findById(id);
+            optionalUrl = Optional.ofNullable(UrlRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundResponse("Page not found")));
         } catch (SQLException e) {
-            LOGGER.error("Error in database", e);
+            log.error("Error in database", e);
             ctx.status(500).result("Error in database");
             return;
         }
@@ -136,7 +134,7 @@ public final class UrlsController {
             saveUrlCheck(newCheck);
             ctx.redirect("/urls/" + id);
         } catch (Exception e) {
-            LOGGER.error("Error during verification URL", e);
+            log.error("Error during verification URL", e);
             ctx.status(500).result("Error during verification URL");
         }
     }

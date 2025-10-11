@@ -27,7 +27,6 @@ tasks.jar {
 }
 
 val junitBomVersion = "5.9.1"
-val picocliVersion = "4.7.7"
 val commonsIoVersion = "2.14.0"
 val commonsLangVersion = "3.17.0"
 val commonsTextVersion = "1.9"
@@ -75,17 +74,13 @@ dependencies {
     implementation ("org.postgresql:postgresql:$postgresqlVersion")
     implementation("com.zaxxer:HikariCP:$hikariCpVersion")
 
-    implementation("info.picocli:picocli:$picocliVersion")
-
     implementation("jakarta.servlet:jakarta.servlet-api:$jakartaServletVersion")
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:$jakartaServletJspVersion")
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:$jakartaServletJspJstlVersion")
 
     implementation ("com.konghq:unirest-java:$unirestVersion")
     implementation ("org.jsoup:jsoup:$jsoupVersion")
-    implementation ("io.ebean:ebean:13.17.0")
 
-    annotationProcessor("info.picocli:picocli-codegen:$picocliVersion")
     annotationProcessor ("org.projectlombok:lombok:$lombokVersion")
 
     compileOnly ("org.projectlombok:lombok:$lombokVersion")
