@@ -1,4 +1,7 @@
+.idea
+/app/.idea
 .gradle
+app.iml
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
