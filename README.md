@@ -3,29 +3,31 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=F-Jahura_java-project-72&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=F-Jahura_java-project-72)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=F-Jahura_java-project-72&metric=coverage)](https://sonarcloud.io/summary/new_code?id=F-Jahura_java-project-72)
 [deploy app](https://java-project-72-2-c7vd.onrender.com)
-#Проект "Анализатор страниц"
+
+# Проект "Анализатор страниц"
+
 **Описание:**
 
 Проект представляет собой web-приложение для анализа сайтов на SEO-пригодность.
 
-***Сборка:***
+**Сборка:**
 ```java
 make build
 ```
-***Тест:***
+**Тест:**
 ```java
 make test
 ```
-***Sonar:***
+**Sonar:**
 ```java
 make sonar
 ```
-***CheckStyle:***
+**CheckStyle:**
 ```java
 make lint
 ```
-***Запуск:***
+**Запуск:**
 ```java
 make run
 ```
-***Приложение будет доступно по адресу:*** http://localhost:7070
+**Приложение будет доступно по адресу:**  http://localhost:7070
