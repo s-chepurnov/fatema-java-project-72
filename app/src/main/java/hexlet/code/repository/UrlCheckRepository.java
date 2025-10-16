@@ -104,7 +104,6 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-
     public static Map<Long, UrlCheck> getLastChecksForAllUrls() throws SQLException {
         LOGGER.info("Getting last checks for all URLs");
         String sql = "SELECT DISTINCT ON (url_id) * FROM url_checks ORDER BY url_id, created_at DESC";

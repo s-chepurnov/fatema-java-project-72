@@ -19,4 +19,4 @@ lint:
 run:
 	./build/install/app/bin/app
 
-.PHONY: clean build test report sonar lint run
+.PHONY: build
