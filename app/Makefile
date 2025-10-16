@@ -2,7 +2,7 @@ clean:
 	./gradlew clean
 
 build:
-	./gradlew build
+	./gradlew installDist
 
 test:
 	./gradlew test
@@ -17,6 +17,6 @@ lint:
 	./gradlew checkstyleMain
 
 run:
-	./gradlew run
+	./build/install/app/bin/app
 
-.PHONY: build
+.PHONY: clean build test report sonar lint run

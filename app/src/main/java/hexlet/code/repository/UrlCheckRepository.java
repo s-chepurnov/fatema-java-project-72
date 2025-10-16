@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,32 +78,32 @@ public class UrlCheckRepository extends BaseRepository {
         return checks;
     }
 
-    public static Optional<UrlCheck> findLastCheckByUrlId(Long urlId) throws SQLException {
-        String sql = "SELECT id, url_id, status_code, title, h1, description, created_at"
-                + " FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
+    public static Map<Long, UrlCheck> findLatestChecks() throws SQLException {
+        var sql = "SELECT DISTINCT ON (url_id) id, url_id, status_code, title, h1, description, created_at"
+                + " from url_checks order by url_id DESC, id DESC";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
 
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, urlId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                UrlCheck check = new UrlCheck();
-                check.setId(rs.getLong(ID));
-                check.setUrlId(rs.getLong(URL_ID));
-                check.setStatusCode(rs.getInt(STATUS_CODE));
-                check.setTitle(rs.getString(TITLE));
-                check.setH1(rs.getString(H1));
-                check.setDescription(rs.getString(DESCRIPTION));
-                check.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
-
-                return Optional.of(check);
+            var resultSet = stmt.executeQuery();
+            var result = new HashMap<Long, UrlCheck>();
+            while (resultSet.next()) {
+                var id = resultSet.getLong(ID);
+                var urlId = resultSet.getLong(URL_ID);
+                var statusCode = resultSet.getInt(STATUS_CODE);
+                var title = resultSet.getString(TITLE);
+                var h1 = resultSet.getString(H1);
+                var description = resultSet.getString(DESCRIPTION);
+                var createdAt = resultSet.getTimestamp(CREATED_AT).toLocalDateTime();
+                var check = new UrlCheck(statusCode, title, h1, description);
+                check.setId(id);
+                check.setUrlId(urlId);
+                check.setCreatedAt(createdAt);
+                result.put(urlId, check);
             }
+            return result;
         }
-
-        return Optional.empty();
     }
+
 
     public static Map<Long, UrlCheck> getLastChecksForAllUrls() throws SQLException {
         LOGGER.info("Getting last checks for all URLs");

@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Optional;
 
 import static hexlet.code.repository.UrlCheckRepository.saveUrlCheck;
 import static io.javalin.rendering.template.TemplateUtil.model;
@@ -48,10 +47,14 @@ public final class UrlsController {
     public static void index(Context ctx) {
         try {
             var urls = UrlRepository.getEntities();
+            Map<Long, UrlCheck> latestChecks = UrlCheckRepository.findLatestChecks();
             for (Url url : urls) {
-                Optional<UrlCheck> lastCheck = UrlCheckRepository.findLastCheckByUrlId(url.getId());
-                lastCheck.ifPresent(url::setLastCheck);
+                UrlCheck lastCheck = latestChecks.get(url.getId());
+                if (lastCheck != null) {
+                    url.setLastCheck(lastCheck);
+                }
             }
+
             var page = new UrlsPage(urls);
             page.setFlash(ctx.consumeSessionAttribute(FLASH));
             ctx.render("urls/index.jte", model("page", page));
@@ -110,22 +113,9 @@ public final class UrlsController {
     public static void createCheck(Context ctx) throws SQLException {
         Long id = Long.parseLong(ctx.pathParam("id"));
 
-        Optional<Url> optionalUrl;
-        try {
-            optionalUrl = Optional.ofNullable(UrlRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundResponse("Page not found")));
-        } catch (SQLException e) {
-            log.error("Error in database", e);
-            ctx.status(500).result("Error in database");
-            return;
-        }
+        Url url = UrlRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResponse("Url with id = " + id + " not found"));
 
-        if (optionalUrl.isEmpty()) {
-            ctx.status(404).result("URL is not found");
-            return;
-        }
-
-        Url url = optionalUrl.get();
         UrlCheckService urlCheckService = new UrlCheckService();
 
         try {
@@ -137,5 +127,6 @@ public final class UrlsController {
             log.error("Error during verification URL", e);
             ctx.status(500).result("Error during verification URL");
         }
+        ctx.redirect("/urls/" + url.getId());
     }
 }

@@ -3,11 +3,11 @@ package hexlet.code.service;
 import hexlet.code.model.UrlCheck;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-
-
+@Slf4j
 public class UrlCheckService {
     private static final String DESCRIPTION = "meta[name=description]";
 
@@ -18,7 +18,7 @@ public class UrlCheckService {
                 .verifySsl(false);
     }
     public UrlCheck performCheck(String url) throws Exception {
-        System.out.println("Отправляю запрос по URL: " + url);
+        log.info("Отправляю запрос по URL: " + url);
         HttpResponse<String> response = Unirest.get(url).asString();
         int statusCode = response.getStatus();
         Document doc = Jsoup.parse(response.getBody());
