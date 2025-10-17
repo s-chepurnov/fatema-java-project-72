@@ -36,6 +36,7 @@ class AppTest {
 
     @BeforeEach
     final void setUp() throws IOException, SQLException {
+        System.setProperty("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
         app = App.getApp();
 
         testUrl = new Url("https://en.hexlet.io");

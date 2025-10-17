@@ -72,6 +72,7 @@ dependencies {
 
     implementation("com.h2database:h2:$h2databaseVersion")
     implementation ("org.postgresql:postgresql:$postgresqlVersion")
+
     implementation("com.zaxxer:HikariCP:$hikariCpVersion")
 
     implementation("jakarta.servlet:jakarta.servlet-api:$jakartaServletVersion")

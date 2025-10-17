@@ -10,10 +10,12 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -75,11 +77,12 @@ public final class UrlsController {
     @SuppressWarnings("java:S1192")
     public static void create(Context ctx) throws SQLException {
         var inputUrl = ctx.formParam("url");
-        URI parsedUrl;
+        URL parsedUrl;
         try {
-            parsedUrl = new URI(inputUrl);
+            var uri = new URI(inputUrl);
+            parsedUrl = uri.toURL();
         } catch (Exception e) {
-            ctx.sessionAttribute("flash", "URL is not corrected");
+            ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.rootPath());
             return;
@@ -88,7 +91,7 @@ public final class UrlsController {
         String normalizedUrl = String
                 .format(
                         "%s://%s%s",
-                        parsedUrl.getScheme(),
+                        parsedUrl.getProtocol(),
                         parsedUrl.getHost(),
                         parsedUrl.getPort() == -1 ? "" : ":" + parsedUrl.getPort()
                 )
@@ -97,16 +100,16 @@ public final class UrlsController {
         Url url = UrlRepository.findByName(normalizedUrl).orElse(null);
 
         if (url != null) {
-            ctx.sessionAttribute("flash", "Webpage already exists");
+            ctx.sessionAttribute("flash", "Страница уже существует");
             ctx.sessionAttribute("flash-type", "info");
         } else {
             Url newUrl = new Url(normalizedUrl);
             UrlRepository.save(newUrl);
-            ctx.sessionAttribute("flash", "Url is successfully created.");
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flash-type", "success");
         }
 
-        ctx.redirect("/urls");
+        ctx.redirect("/urls", HttpStatus.forStatus(302));
     }
 
     @SuppressWarnings("java:S106")
