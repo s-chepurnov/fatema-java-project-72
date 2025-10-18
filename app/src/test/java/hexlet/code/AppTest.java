@@ -9,6 +9,7 @@ import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ class AppTest {
     }
 
     @BeforeEach
-    final void setUp() throws IOException, SQLException {
+    final void setup() throws IOException, SQLException {
         System.setProperty("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
         app = App.getApp();
 
@@ -51,6 +52,7 @@ class AppTest {
         );
         UrlCheckRepository.saveUrlCheck(testUrlCheck);
     }
+
 
     @Test
     void testRootPage() {
