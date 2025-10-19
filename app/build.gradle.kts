@@ -66,13 +66,11 @@ dependencies {
     implementation("io.javalin:javalin-rendering:$javalinVersion")
     implementation("gg.jte:jte:$jteVersion")
     implementation("org.slf4j:slf4j-simple:$slf4jVersion")
-
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation ("com.google.guava:guava:$guavaVersion")
 
     implementation("com.h2database:h2:$h2databaseVersion")
     implementation ("org.postgresql:postgresql:$postgresqlVersion")
-
     implementation("com.zaxxer:HikariCP:$hikariCpVersion")
 
     implementation("jakarta.servlet:jakarta.servlet-api:$jakartaServletVersion")

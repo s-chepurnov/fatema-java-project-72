@@ -29,20 +29,8 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    /*private static String getDatabaseUrl() {
-        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
-    }*/
-
     private static String getDatabaseUrl() {
-        String sysProp = System.getProperty("JDBC_DATABASE_URL");
-        if (sysProp != null) {
-            return sysProp;
-        }
-        String envUrl = System.getenv("JDBC_DATABASE_URL");
-        if (envUrl != null) {
-            return envUrl;
-        }
-        return "jdbc:h2:mem:project";
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
     }
 
     public static Javalin getApp() throws IOException, SQLException {
