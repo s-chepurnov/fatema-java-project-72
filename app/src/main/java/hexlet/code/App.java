@@ -30,8 +30,8 @@ public class App {
     }
 
     private static String getDatabaseUrl() {
-        //return System.getenv().getOrDefault("db", "jdbc:h2:mem:project");
-        return System.getProperty("db", "jdbc:h2:mem:project");
+        return System.getenv().getOrDefault("db", "jdbc:h2:mem:project");
+        //return System.getProperty("db", "jdbc:h2:mem:project");
     }
 
     public static Javalin getApp() throws IOException, SQLException {
