@@ -2,6 +2,7 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.model.Url;
 import hexlet.code.utils.TestUtils;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
@@ -19,10 +20,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AppTest {
     private static MockWebServer mockServer;
@@ -85,6 +88,19 @@ class AppTest {
 
         TestUtils.addUrlCheck(dataSource, (long) existingUrl.get("id"));
         existingUrlCheck = TestUtils.getUrlCheck(dataSource, (long) existingUrl.get("id"));
+    }
+
+    @Test
+    public void testUrlConstructor() {
+        Long id = 1L;
+        String name = "example";
+        LocalDateTime createdAt = LocalDateTime.of(2023, 10, 30, 12, 0);
+
+        Url url = new Url(id, name, createdAt);
+
+        assertEquals(id, url.getId());
+        assertEquals(name, url.getName());
+        assertEquals(createdAt, url.getCreatedAt());
     }
 
     @Nested
