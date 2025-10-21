@@ -8,7 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 @Slf4j
-public class UrlCheckService {
+public final class UrlCheckService {
     private static final String DESCRIPTION = "meta[name=description]";
 
     static {
